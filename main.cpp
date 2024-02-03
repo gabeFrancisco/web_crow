@@ -50,16 +50,20 @@ int main(int argc, char **argv)
         });
 
     CROW_ROUTE(app, "/db").methods(crow::HTTPMethod::POST)([&cstr](const crow::request& req)
-                                                                {
+        {
             try{
                 pqxx::connection conn{cstr};
                 pqxx::work w{conn};
 
-                auto params = crow::json::load(req.body);
-                std::cout << params;
+                auto params = req.get_body_params();
+                
+                std::string name = params.get("name");
+                std::string qte = params.get("qte");
+                std::string price = params.get("price");
+                std::string userId = params.get("userId");
 
-                w.exec0("insert into products(name, qte, price, userId) values ('Book', 7, 12.30," + 
-                    std::string(params["userId"]) + ")");
+                w.exec0("insert into products(name, qte, price, userId) values ('" + name + "'," + qte + "," + price + "," + 
+                    userId + ")");
                 w.commit();
 
                 auto page = crow::mustache::load("db.html");
@@ -70,7 +74,8 @@ int main(int argc, char **argv)
                 std::cerr << e.what() << std::endl;
                 auto page = crow::mustache::load("error.html");
                 return page.render();
-            } });
+            }
+        });
 
     app.port(1808)
         .multithreaded()
