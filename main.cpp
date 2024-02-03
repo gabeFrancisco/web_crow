@@ -49,17 +49,27 @@ int main(int argc, char **argv)
             }
         });
 
-    CROW_ROUTE(app, "/db/<string>").methods(crow::HTTPMethod::GET)([&cstr](std::string value)
-                                                                     {
+    CROW_ROUTE(app, "/db").methods(crow::HTTPMethod::POST)([&cstr](const crow::request& req)
+                                                                {
             try{
                 pqxx::connection conn{cstr};
                 pqxx::work w{conn};
 
-                w.exec0("insert into users");
+                auto params = crow::json::load(req.body);
+                std::cout << params;
+
+                w.exec0("insert into products(name, qte, price, userId) values ('Book', 7, 12.30," + 
+                    std::string(params["userId"]) + ")");
+                w.commit();
+
+                auto page = crow::mustache::load("db.html");
+                crow::mustache::context ctx({{"message", "New product added!"}});
+                return page.render(ctx);
             }
             catch(const std::exception &e){
                 std::cerr << e.what() << std::endl;
-                return std::string("Error");
+                auto page = crow::mustache::load("error.html");
+                return page.render();
             } });
 
     app.port(1808)

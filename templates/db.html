@@ -11,5 +11,20 @@
     <h3>Connecting to a database and retrieving values!</h3>
     <hr />
     <p>The user id from the database is: <i>{{ user_id }}</i></p>
+    <form action="db" method="post">
+      <input type="text" value="1" placeholder="User id" name="userId"/>
+      <small>Enter the user id here.</small>
+
+      <input type="text" placeholder="Product name" name="name">
+      <small>A good product name.</small>
+
+      <input type="number" placeholder="Quantity" name="qte">
+      <small>The amount of the product in the storage</small>
+
+      <input type="number" placeholder="Price" name="price">
+      <small>The cost of it</small>
+      <button type="submit">Send data!</button>
+    </form>
+    <h4> {{message}}</h4>
   </body>
 </html>
