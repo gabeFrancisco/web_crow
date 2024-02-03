@@ -4,7 +4,7 @@
 int main(int argc, char **argv)
 {
     crow::SimpleApp app;
-
+    std::string cstr = "postgresql://localhost/webcrow?user=postgres&password=1234";
     // Base home route
     CROW_ROUTE(app, "/")
     ([]()
@@ -26,26 +26,41 @@ int main(int argc, char **argv)
 
     CROW_ROUTE(app, "/db")
     (
-        []()
+        [&cstr]()
         {
             try
             {
-                pqxx::connection conn{"postgresql://localhost/DoctorKey?user=postgres&password=1234"};
-                pqxx::work tx{conn};
+                pqxx::connection conn{cstr};
+                pqxx::work w{conn};
+                pqxx::row r = w.exec1(
+                    "select * from users limit 1");
 
-                pqxx::row r = tx.exec1(
-                    "select * from \"Users\" limit 1");
+                w.commit();
 
-                tx.commit();
-
-                return r[0].as<std::string>();
+                auto page = crow::mustache::load("db.html");
+                crow::mustache::context ctx({{"user_id", r[0].as<std::string>()}});
+                return page.render(ctx);
             }
-            catch (const std::exception& e)
+            catch (const std::exception &e)
             {
                 std::cerr << e.what() << std::endl;
-                return std::string("Error");
+                auto page = crow::mustache::load("error.html");
+                return page.render();
             }
         });
+
+    CROW_ROUTE(app, "/db/<string>").methods(crow::HTTPMethod::GET)([&cstr](std::string value)
+                                                                     {
+            try{
+                pqxx::connection conn{cstr};
+                pqxx::work w{conn};
+
+                w.exec0("insert into users");
+            }
+            catch(const std::exception &e){
+                std::cerr << e.what() << std::endl;
+                return std::string("Error");
+            } });
 
     app.port(1808)
         .multithreaded()
