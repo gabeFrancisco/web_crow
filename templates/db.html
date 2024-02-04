@@ -4,27 +4,48 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="static/css/styles.css" />
-    <title>Web Crow - Database</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Web Crow</title>
   </head>
   <body>
-    <h1>Web Crow Database</h1>
-    <h3>Connecting to a database and retrieving values!</h3>
-    <hr />
-    <p>The user id from the database is: <i>{{ user_id }}</i></p>
-    <form action="db" method="post">
-      <input type="text" value="1" placeholder="User id" name="userId"/>
-      <small>Enter the user id here.</small>
+    <header>
+      <div class="logo">
+        <img src="static/assets/cpp.svg" alt="Cpp logo" />
+        <h2>Web Crow</h2>
+      </div>
+      <div class="menu">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/db">Db</a></li>
+        </ul>
+      </div>
+    </header>
+    <main>
+      <h1>Web Crow Database</h1>
+      <h3>Connecting to a database and retrieving values!</h3>
+      <hr />
+      <p>The user id from the database is: <i>{{ user_id }}</i></p>
+      <form action="db" method="post">
+        <input type="text" value="1" placeholder="User id" name="userId" />
+        <small>Enter the user id here.</small>
 
-      <input type="text" placeholder="Product name" name="name">
-      <small>A good product name.</small>
+        <input type="text" placeholder="Product name" name="name" />
+        <small>A good product name.</small>
 
-      <input type="number" placeholder="Quantity" name="qte">
-      <small>The amount of the product in the storage</small>
+        <input type="number" placeholder="Quantity" name="qte" />
+        <small>The amount of the product in the storage</small>
 
-      <input type="number" placeholder="Price" name="price">
-      <small>The cost of it</small>
-      <button type="submit">Send data!</button>
-    </form>
-    <h4> {{message}}</h4>
+        <input type="number" placeholder="Price" name="price" />
+        <small>The cost of it</small>
+        <button type="submit">Send data!</button>
+      </form>
+      <h4>{{message}}</h4>
+    </main>
   </body>
 </html>

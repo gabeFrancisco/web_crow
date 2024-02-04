@@ -1,5 +1,6 @@
 #include <crow.h>
 #include <pqxx/pqxx>
+#include "repositories/repository.cpp"
 
 int main(int argc, char **argv)
 {
@@ -65,7 +66,7 @@ int main(int argc, char **argv)
                 w.exec0("insert into products(name, qte, price, userId) values ('" + name + "'," + qte + "," + price + "," + 
                     userId + ")");
                 w.commit();
-
+            
                 auto page = crow::mustache::load("db.html");
                 crow::mustache::context ctx({{"message", "New product added!"}});
                 return page.render(ctx);
